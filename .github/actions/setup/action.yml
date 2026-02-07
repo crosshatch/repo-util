@@ -3,14 +3,11 @@ description: Common workflow setup steps
 runs:
   using: composite
   steps:
-    - name: Install pnpm
-      uses: pnpm/action-setup@v4
-    - name: Install node
-      uses: actions/setup-node@v6
+    - uses: actions/setup-node@v6
       with:
         cache: pnpm
         registry-url: "https://registry.npmjs.org"
         scope: "@crosshatch"
-    - name: Install dependencies
-      shell: bash
+    - uses: pnpm/action-setup@v4
+    - shell: bash
       run: pnpm install
