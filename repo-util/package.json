@@ -4,7 +4,7 @@
   "type": "module",
   "sideEffects": false,
   "bin": {
-    "align": "./dist/main.ts"
+    "align": "./dist/main.js"
   },
   "license": "Apache-2.0",
   "homepage": "https://docs.crosshatch.dev",
