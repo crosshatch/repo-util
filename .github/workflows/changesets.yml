@@ -17,9 +17,9 @@ jobs:
       - run: pnpm run build
       - run: |
           echo "//registry.npmjs.org/:provenance=true" >> .npmrc
-          echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" >> .npmrc
+          echo "//registry.npmjs.org/:_authToken=\${NODE_AUTH_TOKEN}" >> .npmrc
         env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN || env.NODE_AUTH_TOKEN }}
       - id: changesets
         uses: changesets/action@v1
         with:
