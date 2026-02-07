@@ -43,11 +43,10 @@ catalogs:
 importers:
 
   .:
-    dependencies:
+    devDependencies:
       '@changesets/cli':
         specifier: ^2.29.8
         version: 2.29.8(@types/node@25.2.1)
-    devDependencies:
       '@effect/language-service':
         specifier: 'catalog:'
         version: 0.73.0
