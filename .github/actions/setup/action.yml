@@ -1,0 +1,14 @@
+name: Setup
+description: Common workflow setup steps
+runs:
+  using: composite
+  steps:
+    - name: Install pnpm
+      uses: pnpm/action-setup@v4
+    - name: Install node
+      uses: actions/setup-node@v6
+      with:
+        cache: pnpm
+    - name: Install dependencies
+      shell: bash
+      run: pnpm install

@@ -1,0 +1,30 @@
+{
+  "name": "@crosshatch/repo-util",
+  "version": "0.1.0-beta.1",
+  "type": "module",
+  "sideEffects": false,
+  "bin": {
+    "align": "./dist/main.ts"
+  },
+  "license": "Apache-2.0",
+  "homepage": "https://docs.crosshatch.dev",
+  "description": "Config-level utilities used across Crosshatch repos.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/crosshatch/repo-util.git",
+    "directory": "packages/align"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "bugs": {
+    "url": "https://github.com/crosshatch/repo-util/issues"
+  },
+  "peerDependencies": {
+    "@effect/cli": "catalog:",
+    "@effect/platform": "catalog:",
+    "effect": "catalog:",
+    "yaml": "catalog:"
+  }
+}
