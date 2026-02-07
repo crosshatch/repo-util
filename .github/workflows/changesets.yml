@@ -13,6 +13,14 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v6
+        with:
+          cache: pnpm
+          registry-url: "https://registry.npmjs.org"
+          scope: "@crosshatch"
+      - shell: bash
+        run: pnpm install
       - uses: ./.github/actions/setup
       - run: pnpm run build
       - uses: changesets/action@v1
