@@ -4,7 +4,8 @@
   "scripts": {
     "prepare": "ts-patch install -s",
     "build": "tsc -b",
-    "watch": "tsc -b -w"
+    "watch": "tsc -b -w",
+    "changeset": "changeset"
   },
   "devDependencies": {
     "@changesets/cli": "^2.29.8",
