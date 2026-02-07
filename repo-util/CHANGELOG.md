@@ -1,5 +1,11 @@
 # @crosshatch/repo-util
 
+## 0.1.2
+
+### Patch Changes
+
+- 6aeba03: Still configuring changesets
+
 ## 0.1.1
 
 ### Patch Changes
