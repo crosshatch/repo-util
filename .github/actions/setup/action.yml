@@ -1,5 +1,5 @@
 name: Setup
-description: Common workflow setup steps
+description: Workflow setup
 runs:
   using: composite
   steps:
@@ -7,7 +7,5 @@ runs:
     - uses: actions/setup-node@v6
       with:
         cache: pnpm
-        registry-url: "https://registry.npmjs.org"
-        scope: "@crosshatch"
     - shell: bash
       run: pnpm install

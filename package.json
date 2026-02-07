@@ -8,7 +8,6 @@
     "changeset": "changeset"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.29.8",
     "@effect/language-service": "catalog:",
     "@effect/platform-node": "catalog:",
     "@types/node": "catalog:",
