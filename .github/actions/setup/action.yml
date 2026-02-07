@@ -9,6 +9,8 @@ runs:
       uses: actions/setup-node@v6
       with:
         cache: pnpm
+        registry-url: "https://registry.npmjs.org"
+        scope: "@crosshatch"
     - name: Install dependencies
       shell: bash
       run: pnpm install
