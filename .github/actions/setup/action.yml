@@ -8,4 +8,4 @@ runs:
       with:
         cache: pnpm
     - shell: bash
-      run: pnpm install
+      run: pnpm i
