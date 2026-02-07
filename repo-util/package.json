@@ -15,7 +15,8 @@
     "directory": "packages/align"
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "provenance": true
   },
   "bugs": {
     "url": "https://github.com/crosshatch/repo-util/issues"
