@@ -4,42 +4,43 @@ import { Console, Effect, flow, Schema as S } from "effect"
 import { cwd } from "node:process"
 import * as yaml from "yaml"
 
-const parsePackageJson = Effect.flatMap(S.decodeUnknown(
-  S.parseJson(S.Struct({
-    packageManager: S.String,
-  })),
-  { onExcessProperty: "preserve" },
-))
+const parsePackageJson = Effect.flatMap(
+  S.decodeUnknown(
+    S.parseJson(
+      S.Struct({
+        packageManager: S.String,
+      }),
+    ),
+    { onExcessProperty: "preserve" },
+  ),
+)
 
 const Dependencies = S.Record({
   key: S.String,
   value: S.String,
 })
 
-const mergeDependencies = (
-  a: typeof Dependencies.Type,
-  b: typeof Dependencies.Type,
-) =>
-  Object.fromEntries(
-    Object.entries({ ...a, ...b }).toSorted(([a], [b]) => a.localeCompare(b)),
-  )
+const mergeDependencies = (a: typeof Dependencies.Type, b: typeof Dependencies.Type) =>
+  Object.fromEntries(Object.entries({ ...a, ...b }).toSorted(([a], [b]) => a.localeCompare(b)))
 
 const loadWorkspace = flow(
   Effect.map(yaml.parse),
-  Effect.flatMap(S.decodeUnknown(
-    S.Struct({
-      packages: S.Array(S.String),
-      catalog: Dependencies,
-      overrides: Dependencies,
-    }),
-    { onExcessProperty: "preserve" },
-  )),
+  Effect.flatMap(
+    S.decodeUnknown(
+      S.Struct({
+        packages: S.Array(S.String),
+        catalog: Dependencies,
+        overrides: Dependencies,
+      }),
+      { onExcessProperty: "preserve" },
+    ),
+  ),
 )
 
 export const alignCommand = Command.make(
   "align",
   { childDir: Args.text({ name: "child" }) },
-  Effect.fn(function*({ childDir }) {
+  Effect.fn(function* ({ childDir }) {
     yield* Console.log(`Aligning configuration with that of "${childDir}"`)
 
     const path = yield* Path.Path
@@ -51,16 +52,14 @@ export const alignCommand = Command.make(
     const childWorkspaceYamlPathname = path.join(childDir, "pnpm-workspace.yaml")
 
     // Ensure all manifests exist.
-    const childHelixDir = path.join(childDir, ".helix")
-    for (
-      const pathname of [
-        rootPackageJsonPathname,
-        childPackageJsonPathname,
-        rootWorkspaceYamlPathname,
-        childWorkspaceYamlPathname,
-        childHelixDir,
-      ]
-    ) {
+    // const childHelixDir = path.join(childDir, ".helix")
+    for (const pathname of [
+      rootPackageJsonPathname,
+      childPackageJsonPathname,
+      rootWorkspaceYamlPathname,
+      childWorkspaceYamlPathname,
+      // childHelixDir,
+    ]) {
       const exists = yield* fs.exists(pathname)
       if (!exists) {
         return yield* Effect.fail(`"${pathname}" does not exist`)
