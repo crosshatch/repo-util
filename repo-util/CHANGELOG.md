@@ -1,5 +1,11 @@
 # @crosshatch/repo-util
 
+## 0.2.2
+
+### Patch Changes
+
+- f609d95: get cli version from package.json
+
 ## 0.2.1
 
 ### Patch Changes
