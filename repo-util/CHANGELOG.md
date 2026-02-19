@@ -1,5 +1,11 @@
 # @crosshatch/repo-util
 
+## 0.1.5
+
+### Patch Changes
+
+- 4474de7: Disable child helix config existence check
+
 ## 0.1.4
 
 ### Patch Changes
