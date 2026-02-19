@@ -1,5 +1,5 @@
 import { Command } from "@effect/cli"
-import { NodeContext } from "@effect/platform-node"
+import { NodeContext, NodeRuntime } from "@effect/platform-node"
 import { Effect } from "effect"
 import { argv } from "node:process"
 import { alignCommand } from "./align.ts"
@@ -19,5 +19,5 @@ Command.run(
   },
 )(argv).pipe(
   Effect.provide(NodeContext.layer),
-  Effect.runFork,
+  NodeRuntime.runMain,
 )

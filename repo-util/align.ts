@@ -21,8 +21,35 @@ const Dependencies = S.Record({
   value: S.String,
 })
 
-const mergeDependencies = (a: typeof Dependencies.Type, b: typeof Dependencies.Type) =>
-  Object.fromEntries(Object.entries({ ...a, ...b }).toSorted(([a], [b]) => a.localeCompare(b)))
+const stripVersionPrefix = (version: string): string => version.replace(/^[\^~>=<]+/, "")
+
+const compareSemver = (a: string, b: string): number => {
+  const pa = stripVersionPrefix(a).split(".").map(Number)
+  const pb = stripVersionPrefix(b).split(".").map(Number)
+  for (let i = 0; i < Math.max(pa.length, pb.length); i++) {
+    const diff = (pa[i] ?? 0) - (pb[i] ?? 0)
+    if (diff !== 0) return diff
+  }
+  return 0
+}
+
+const mergeDependencies = (
+  parent: typeof Dependencies.Type,
+  child: typeof Dependencies.Type,
+): Effect.Effect<typeof Dependencies.Type, string> =>
+  Effect.gen(function* () {
+    const downgrades: Array<string> = []
+    for (const [dep, childVersion] of Object.entries(child)) {
+      const parentVersion = parent[dep]
+      if (parentVersion !== undefined && compareSemver(childVersion, parentVersion) < 0) {
+        downgrades.push(`  ${dep}: child has ${childVersion}, parent has ${parentVersion}`)
+      }
+    }
+    if (downgrades.length > 0) {
+      return yield* Effect.fail(`Child catalog contains lower versions than parent:\n${downgrades.join("\n")}`)
+    }
+    return Object.fromEntries(Object.entries({ ...parent, ...child }).toSorted(([a], [b]) => a.localeCompare(b)))
+  })
 
 const loadWorkspace = flow(
   Effect.map(yaml.parse),
@@ -45,17 +72,17 @@ const colorizePatch = (patch: string): string =>
       line.startsWith("-")
         ? `\u001B[31m${line}\u001B[0m`
         : line.startsWith("+")
-        ? `\u001B[32m${line}\u001B[0m`
-        : line.startsWith("@@")
-        ? `\u001B[36m${line}\u001B[0m`
-        : line
+          ? `\u001B[32m${line}\u001B[0m`
+          : line.startsWith("@@")
+            ? `\u001B[36m${line}\u001B[0m`
+            : line,
     )
     .join("\n")
 
 export const alignCommand = Command.make(
   "align",
   { childDir: Args.text({ name: "child" }), check: Options.boolean("check") },
-  Effect.fn(function*({ childDir, check }) {
+  Effect.fn(function* ({ childDir, check }) {
     yield* Console.log(`${check ? "Checking alignment with" : "Aligning configuration with that of"} "${childDir}"`)
 
     const path = yield* Path.Path
@@ -67,14 +94,12 @@ export const alignCommand = Command.make(
     const childWorkspaceYamlPathname = path.join(childDir, "pnpm-workspace.yaml")
 
     // Ensure all manifests exist.
-    for (
-      const pathname of [
-        rootPackageJsonPathname,
-        childPackageJsonPathname,
-        rootWorkspaceYamlPathname,
-        childWorkspaceYamlPathname,
-      ]
-    ) {
+    for (const pathname of [
+      rootPackageJsonPathname,
+      childPackageJsonPathname,
+      rootWorkspaceYamlPathname,
+      childWorkspaceYamlPathname,
+    ]) {
       const exists = yield* fs.exists(pathname)
       if (!exists) {
         return yield* Effect.fail(`"${pathname}" does not exist`)
@@ -108,8 +133,8 @@ export const alignCommand = Command.make(
           ...childPackages.map((pathname) => path.join(childDir, pathname)),
         ]).values(),
       ].toSorted(),
-      catalog: mergeDependencies(rootWorkspace.catalog, childCatalog),
-      overrides: mergeDependencies(rootWorkspace.overrides, childOverrides),
+      catalog: yield* mergeDependencies(rootWorkspace.catalog, childCatalog),
+      overrides: yield* mergeDependencies(rootWorkspace.overrides, childOverrides),
     })
     artifacts.set(rootWorkspaceYamlPathname, {
       original: rootWorkspaceYamlOriginal,
@@ -125,9 +150,9 @@ export const alignCommand = Command.make(
       }
       if (misaligned.length > 0) {
         yield* Console.error(
-          `\u001B[1m\u001B[31mAlignment check failed.\u001B[0m The following files are misaligned:\n\n${
-            misaligned.join("\n\n")
-          }`,
+          `\u001B[1m\u001B[31mAlignment check failed.\u001B[0m The following files are misaligned:\n\n${misaligned.join(
+            "\n\n",
+          )}`,
         )
         return yield* Effect.fail("Alignment check failed")
       }
