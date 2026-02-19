@@ -43,11 +43,11 @@ const colorizePatch = (patch: string): string =>
     .split("\n")
     .map((line) =>
       line.startsWith("-")
-        ? `\x1b[31m${line}\x1b[0m`
+        ? `\u001B[31m${line}\u001B[0m`
         : line.startsWith("+")
-        ? `\x1b[32m${line}\x1b[0m`
+        ? `\u001B[32m${line}\u001B[0m`
         : line.startsWith("@@")
-        ? `\x1b[36m${line}\x1b[0m`
+        ? `\u001B[36m${line}\u001B[0m`
         : line
     )
     .join("\n")
@@ -125,7 +125,7 @@ export const alignCommand = Command.make(
       }
       if (misaligned.length > 0) {
         yield* Console.error(
-          `\x1b[1m\x1b[31mAlignment check failed.\x1b[0m The following files are misaligned:\n\n${
+          `\u001B[1m\u001B[31mAlignment check failed.\u001B[0m The following files are misaligned:\n\n${
             misaligned.join("\n\n")
           }`,
         )
