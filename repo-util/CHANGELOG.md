@@ -1,5 +1,12 @@
 # @crosshatch/repo-util
 
+## 0.2.1
+
+### Patch Changes
+
+- 03beaf7: add check to ensure child dep not lower version than that of parent
+- b4660f5: use unicode instead of hex for colorization
+
 ## 0.2.0
 
 ### Minor Changes
