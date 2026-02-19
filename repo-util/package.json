@@ -22,6 +22,7 @@
     "@effect/cli": "catalog:",
     "@effect/platform": "catalog:",
     "@effect/platform-node": "catalog:",
+    "diff": "catalog:",
     "effect": "catalog:",
     "yaml": "catalog:"
   }

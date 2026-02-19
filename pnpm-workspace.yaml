@@ -8,6 +8,7 @@ catalog:
   "@effect/platform-node": ^0.104.1
   "@types/node": ^25.2.0
   dedent: ^1.7.1
+  diff: ^8.0.3
   dprint: ^0.51.1
   effect: ^3.19.16
   oxlint: ^1.35.0
